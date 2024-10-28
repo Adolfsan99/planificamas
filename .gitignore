@@ -1,0 +1,15 @@
+venv/
+env/
+
+# Archivos compilados de Python
+__pycache__/
+*.py[cod]
+
+# Configuración de entornos locales
+.idea/
+.vscode/
+
+# Archivos de logs
+*.log
+
+
