@@ -1,8 +1,810 @@
-<h1>>Estimados usuarios</h1>
+<html>
 
-Les informamos que nuestro sitio web estará completamente fuera de servicio debido a trabajos de mantenimiento. Este proceso es necesario para mejorar nuestra plataforma y ofrecerles una mejor experiencia.
+<head>
+    <meta charset="UTF-8">
+    <title>Planifica+</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/app-icons/favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="./css/perfil.css">
 
-Agradecemos su comprensión y paciencia. Estaremos de regreso lo antes posible.
+    <style>
+        :root {
+            --primary-color: #ffc639;
+            --sidebar-bg: #fff1d0;
+            --text-color: #333;
+        }
 
-Atentamente,
-Equipo de Planifica+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+        }
+
+        /* Header styles */
+        /*.header {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }*/
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 0rem 2rem;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: -webkit-fill-available;
+            z-index: 999;
+        }
+
+        input,
+        textarea,
+        select {
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+        }
+
+        button {
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+            background: var(--primary-color);
+            color: var(--text-color);
+        }
+
+        .logo {
+            width: 120px;
+            height: 60px;
+        }
+
+        .search-bar {
+            flex: 1;
+            margin: 0 2rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 1rem;
+            border: 1px solid #0000006b;
+            color: #0000006b;
+            cursor: pointer;
+            background: white;
+        }
+
+        .user-menu {
+            position: relative;
+            border-radius: none;
+            padding: none;
+            background: none;
+            color: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            background: #ddd;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: var(--sidebar-bg);
+            position: fixed;
+            left: 0;
+            top: 80px;
+            padding: 2rem 0;
+        }
+
+        .nav-item {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 0, 0, 0.05);
+            font-weight: bold;
+        }
+
+        /* Main content styles */
+        .main-content {
+            margin-left: 250px;
+            margin-top: 5vh;
+            padding: 2rem;
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .create-task-btn {
+            background: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 10px;
+            padding: 2rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .task-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .task-card.completed {
+            opacity: 0.7;
+            background: #f8f8f8;
+        }
+
+        .task-card.completed h3 {
+            text-decoration: line-through;
+        }
+
+        .task-options {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+        }
+
+        .task-options-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .task-options-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 100;
+        }
+
+        .task-options-menu.active {
+            display: block;
+        }
+
+        .task-option {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .task-option:hover {
+            background: #f5f5f5;
+        }
+
+        .task-option.complete-task {
+            color: green;
+        }
+
+        .task-option.complete-task.completed {
+            color: #666;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="vsc-initialized" tinamind-id="befflofjcniongenjmbkgkoljhgliihe">
+    <header class="header">
+        <div class="logo">
+            <a href="home.html"> <img src="./assets/logo.png" alt="logo" style="max-width: 10rem;"> </a>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Buscar tareas...">
+        </div>
+
+        <button class="notification-btn">
+            <i class="fas fa-bell"></i>
+        </button>
+
+        <div class="user-menu">
+            <img src="./assets/example-user.png" class="user-icon" alt="" srcset="">
+            <div class="nav-item active" data-view="edit-profile">María Pérez</div>
+        </div>
+
+    </header>
+
+    <!--Icono de menu desplegable-->
+    <button class="menu-icon">
+        <svg class="dropdown-icon" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="#333" d="M7 10l5 5 5-5z"></path>
+        </svg>
+    </button>
+
+
+    <nav class="sidebar">
+        <div class="nav-item" data-view="home">Inicio</div>
+        <div class="nav-item" data-view="completed">Tareas completadas</div>
+        <div class="nav-item" data-view="calendar">Calendario</div>
+        <div class="nav-item" data-view="folders">Mis carpetas</div>
+        <div class="nav-item" data-view="plus">Planifica Plus</div>
+        <div class="nav-item" data-view="support" style="margin-top: auto;">Soporte</div>
+    </nav>
+
+    <main class="main-content">
+        <h1>Tu cuenta</h1>
+
+        <div class="task-grid">
+            <div class="main-container">
+                <div class="header-container">
+                    <div class="profile-header">
+                        <img src="./assets/app-icons/profile.svg" alt="Mi perfil">
+                        <h2>Mi Perfil</h2>
+                    </div>
+                    <div class="button-container">
+                        <button class="edit-btn" id="editBtn">
+                            <img src="./assets/app-icons/edit_pencil.svg" alt="Editar">
+                            Editar
+                        </button>
+                        <button class="discard-btn" id="discardBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Descartar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <img class="background-image" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb"
+                        alt="Paisaje de montañas y lago" width="800" height="150">
+                    <img class="profile-photo" src="./assets/example-user.png" alt="Foto de perfil de mujer sonriente"
+                        width="200" height="200">
+                </div>
+
+                <div class="personal-info">
+                    <h3>Datos personales</h3>
+                    <div class="data-container">
+                        <div class="data-row">
+                            <span class="data-label">Nombre:</span>
+                            <span class="data-value" id="nombreSpan">Maria Alejandra</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Apellido:</span>
+                            <span class="data-value" id="apellidoSpan">Perez Rivero</span>
+                        </div>
+                    </div>
+
+                    <h3>Datos de tu cuenta</h3>
+                    <div class="data-container">
+                        <div class="data-row">
+                            <span class="data-label">Usuario:</span>
+                            <span class="data-value" id="usuarioSpan">marialajandra2</span>
+                        </div>
+                        <div id="passwordContainer">
+                            <div class="data-row" id="passwordStaticRow">
+                                <span class="data-label">Contraseña:</span>
+                                <span class="data-value" id="passwordSpan">*******</span>
+                            </div>
+                            <div class="password-fields" id="passwordFields">
+                                <div class="password-row">
+                                    <span class="data-label">Contraseña actual:</span>
+                                    <input type="password" class="data-value" id="currentPassword">
+                                </div>
+                                <div class="password-row">
+                                    <span class="data-label">Contraseña nueva:</span>
+                                    <input type="password" class="data-value" id="newPassword">
+                                </div>
+                                <div class="password-row">
+                                    <span class="data-label">Repetir contraseña nueva:</span>
+                                    <input type="password" class="data-value" id="confirmPassword">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal" id="taskModal" style="display: none;">
+        <div class="modal-content" style="margin-top: 15vh">
+
+            <span class="close" onclick="document.getElementById('taskModal').style.display='none'"
+                style="font-size: 2rem;color: red;cur;cursor: pointer;">×</span>
+
+            <h2>Tarea actual</h2>
+            <br>
+            <form id="taskForm" style="
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        ">
+                <input type="text" placeholder="Título de la tarea" required="">
+                <input type="date" required="">
+                <select>
+                    <option>Recordatorio</option>
+                    <option>Hoy</option>
+                    <option>Mañana</option>
+                    <option>Diario</option>
+                </select>
+                <select>
+                    <option>Prioridad</option>
+                    <option>Urgente</option>
+                    <option>Importante</option>
+                    <option>Otros</option>
+                </select>
+                <textarea placeholder="Descripción"></textarea>
+                <button type="submit">Guardar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/your-code.js"></script>
+    <script>
+        // Task management
+        class TaskManager {
+            constructor() {
+                this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+                this.currentView = 'home';
+                this.bindEvents();
+                this.renderTasks();
+            }
+
+            bindEvents() {
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        const view = e.target.getAttribute('data-view');
+                        if (view) {
+                            this.currentView = view;
+                            this.renderTasks();
+                            // Update active state
+                            navItems.forEach(nav => nav.classList.remove('active'));
+                            e.target.classList.add('active');
+                        }
+                    });
+                });
+
+                const createTaskBtn = document.querySelector('.create-task-btn');
+                if (createTaskBtn) {
+                    createTaskBtn.addEventListener('click', () => {
+                        document.getElementById('taskModal').style.display = 'block';
+                        // Reset the form and remove any existing submit handlers
+                        const form = document.getElementById('taskForm');
+                        form.reset();
+                        const newForm = form.cloneNode(true);
+                        form.parentNode.replaceChild(newForm, form);
+                        this.setupCreateTaskHandler(newForm);
+                    });
+                }
+            }
+
+            setupCreateTaskHandler(form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.createTask(e.target);
+                });
+            }
+
+            createTask(form) {
+                const task = {
+                    id: Date.now(),
+                    title: form.querySelector('input[type="text"]').value,
+                    date: form.querySelector('input[type="date"]').value,
+                    reminder: form.querySelector('select').value,
+                    priority: form.querySelectorAll('select')[1].value,
+                    description: form.querySelector('textarea').value,
+                    completed: false
+                };
+
+                this.tasks.push(task);
+                this.saveTasks();
+                this.renderTasks();
+                document.getElementById('taskModal').style.display = 'none';
+                form.reset();
+            }
+
+            editTask(taskId) {
+                const task = this.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                const modal = document.getElementById('taskModal');
+                const form = document.getElementById('taskForm');
+
+                // Reset and clone the form to remove any existing event listeners
+                const newForm = form.cloneNode(true);
+                form.parentNode.replaceChild(newForm, form);
+
+                // Fill the form with task data
+                newForm.querySelector('input[type="text"]').value = task.title;
+                newForm.querySelector('input[type="date"]').value = task.date;
+                newForm.querySelectorAll('select')[0].value = task.reminder;
+                newForm.querySelectorAll('select')[1].value = task.priority;
+                newForm.querySelector('textarea').value = task.description;
+
+                // Add new submit handler
+                newForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    task.title = newForm.querySelector('input[type="text"]').value;
+                    task.date = newForm.querySelector('input[type="date"]').value;
+                    task.reminder = newForm.querySelectorAll('select')[0].value;
+                    task.priority = newForm.querySelectorAll('select')[1].value;
+                    task.description = newForm.querySelector('textarea').value;
+
+                    this.saveTasks();
+                    this.renderTasks();
+                    modal.style.display = 'none';
+                    newForm.reset();
+                });
+
+                modal.style.display = 'block';
+
+            }
+
+            toggleComplete(taskId) {
+                const task = this.tasks.find(t => t.id === taskId);
+                if (task) {
+                    task.completed = !task.completed;
+                    this.saveTasks();
+                    this.renderTasks();
+                }
+            }
+
+            saveTasks() {
+                localStorage.setItem('tasks', JSON.stringify(this.tasks));
+            }
+
+            renderTasks() {
+                const taskGrid = document.querySelector('.task-grid');
+                if (!taskGrid) return;
+
+                // Clear the entire grid
+                taskGrid.innerHTML = '';
+
+                // Handle different views
+                switch (this.currentView) {
+                    case 'home':
+                    case 'completed':
+                        // Only add create button if not in completed view
+                        if (this.currentView !== 'completed') {
+                            taskGrid.innerHTML = `
+                    <button class="create-task-btn">
+                        <i class="fas fa-plus"></i> Crear tarea
+                    </button>
+                `;
+
+                            // Rebind event listener for create button
+                            const createTaskBtn = taskGrid.querySelector('.create-task-btn');
+                            if (createTaskBtn) {
+                                createTaskBtn.addEventListener('click', () => {
+                                    document.getElementById('taskModal').style.display = 'block';
+                                    const form = document.getElementById('taskForm');
+                                    form.reset();
+                                    const newForm = form.cloneNode(true);
+                                    form.parentNode.replaceChild(newForm, form);
+                                    this.setupCreateTaskHandler(newForm);
+                                });
+                            }
+                        }
+
+                        // Filter tasks based on current view
+                        const tasksToShow = this.tasks.filter(task => {
+                            if (this.currentView === 'completed') {
+                                return task.completed;
+                            } else {
+                                return !task.completed;
+                            }
+                        });
+
+                        // Add task cards
+                        tasksToShow.forEach(task => {
+                            const card = this.createTaskCard(task);
+                            taskGrid.appendChild(card);
+                        });
+                        break;
+
+                    case 'calendar':
+                        taskGrid.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#49454f" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    <h2>Calendario</h2>
+                    <p>Próximamente podrás visualizar y gestionar tus tareas en un calendario.</p>
+                </div>
+            `;
+                        break;
+
+                    case 'folders':
+                        taskGrid.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#49454f" stroke-width="2">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <h2>Mis Carpetas</h2>
+                    <p>Próximamente podrás organizar tus tareas en carpetas personalizadas.</p>
+                </div>
+            `;
+                        break;
+
+                    case 'plus':
+                        taskGrid.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#49454f" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    <h2>Planifica Plus</h2>
+                    <p>Próximamente podrás acceder a funciones premium para mejorar tu productividad.</p>
+                </div>
+            `;
+                        break;
+
+                    case 'support':
+                        taskGrid.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#49454f" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                        <line x1="12" y1="17" x2="12" y2="17"/>
+                    </svg>
+                    <h2>Soporte</h2>
+                    <p>Próximamente podrás contactar con nuestro equipo de soporte.</p>
+                </div>
+            `;
+                        break;
+
+                    case 'edit-profile':
+                        taskGrid.innerHTML = `                <div class="main-container">
+                    <div class="header-container">
+                        <div class="profile-header">
+                            <img src="./assets/app-icons/profile.svg" alt="Mi perfil">
+                            <h2>Mi Perfil</h2>
+                        </div>
+                        <div class="button-container">
+                            <button class="edit-btn" id="editBtn">
+                                <img src="./assets/app-icons/edit_pencil.svg" alt="Editar">
+                                Editar
+                            </button>
+                            <button class="discard-btn" id="discardBtn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                                Descartar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <img class="background-image" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb"
+                            alt="Paisaje de montañas y lago" width="800" height="150">
+                        <img class="profile-photo" src="./assets/example-user.png" alt="Foto de perfil de mujer sonriente"
+                            width="200" height="200">
+                    </div>
+
+                    <div class="personal-info">
+                        <h3>Datos personales</h3>
+                        <div class="data-container">
+                            <div class="data-row">
+                                <span class="data-label">Nombre:</span>
+                                <span class="data-value" id="nombreSpan">Maria Alejandra</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Apellido:</span>
+                                <span class="data-value" id="apellidoSpan">Perez Rivero</span>
+                            </div>
+                        </div>
+
+                        <h3>Datos de tu cuenta</h3>
+                        <div class="data-container">
+                            <div class="data-row">
+                                <span class="data-label">Usuario:</span>
+                                <span class="data-value" id="usuarioSpan">marialajandra2</span>
+                            </div>
+                            <div id="passwordContainer">
+                                <div class="data-row" id="passwordStaticRow">
+                                    <span class="data-label">Contraseña:</span>
+                                    <span class="data-value" id="passwordSpan">*******</span>
+                                </div>
+                                <div class="password-fields" id="passwordFields">
+                                    <div class="password-row">
+                                        <span class="data-label">Contraseña actual:</span>
+                                        <input type="password" class="data-value" id="currentPassword">
+                                    </div>
+                                    <div class="password-row">
+                                        <span class="data-label">Contraseña nueva:</span>
+                                        <input type="password" class="data-value" id="newPassword">
+                                    </div>
+                                    <div class="password-row">
+                                        <span class="data-label">Repetir contraseña nueva:</span>
+                                        <input type="password" class="data-value" id="confirmPassword">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+                        break;
+                }
+
+                // Update page title
+                const pageTitle = document.querySelector('.main-content h1');
+                if (pageTitle) {
+                    switch (this.currentView) {
+                        case 'completed':
+                            pageTitle.textContent = 'Tareas completadas';
+                            break;
+                        case 'calendar':
+                            pageTitle.textContent = 'Calendario';
+                            break;
+                        case 'folders':
+                            pageTitle.textContent = 'Mis Carpetas';
+                            break;
+                        case 'plus':
+                            pageTitle.textContent = 'Planifica Plus';
+                            break;
+                        case 'support':
+                            pageTitle.textContent = 'Soporte';
+                            break;
+                        case 'edit-profile':
+                            pageTitle.textContent = 'Tu cuenta';
+                            break;
+                        default:
+                            pageTitle.textContent = 'Todas tus tareas';
+                    }
+                }
+            }
+
+            createTaskCard(task) {
+                const card = document.createElement('div');
+                card.className = `task-card ${task.completed ? 'completed' : ''}`;
+                card.innerHTML = `
+      <div class="task-options">
+        <button class="task-options-btn" data-task-id="${task.id}">
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+        <div class="task-options-menu">
+          <div class="task-option complete-task ${task.completed ? 'completed' : ''}" data-task-id="${task.id}">
+            <i class="fas ${task.completed ? 'fa-times-circle' : 'fa-check-circle'}"></i> 
+            ${task.completed ? 'Desmarcar' : 'Completar'}
+          </div>
+          <div class="task-option edit-task" data-task-id="${task.id}">
+            <i class="fas fa-edit"></i> Editar
+          </div>
+          <div class="task-option delete-task" data-task-id="${task.id}">
+            <i class="fas fa-trash"></i> Eliminar
+          </div>
+        </div>
+      </div>
+      <h3>${task.title}</h3>
+      <p>${task.description}</p>
+      <div class="task-meta">
+        <span>${task.date}</span>
+        <span>${task.priority}</span>
+      </div>
+    `;
+
+                // Add event listeners for options button
+                const optionsBtn = card.querySelector('.task-options-btn');
+                const optionsMenu = card.querySelector('.task-options-menu');
+
+                optionsBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    optionsMenu.classList.toggle('active');
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', () => {
+                    optionsMenu.classList.remove('active');
+                });
+
+                // Complete task
+                card.querySelector('.complete-task').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.toggleComplete(task.id);
+                });
+
+                // Edit task
+                card.querySelector('.edit-task').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.editTask(task.id);
+                    optionsMenu.classList.remove('active');
+                });
+
+                // Delete task
+                card.querySelector('.delete-task').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.deleteTask(task.id);
+                });
+
+                return card;
+            }
+
+            deleteTask(taskId) {
+                if (confirm('¿Estás seguro de que deseas eliminar esta tarea?')) {
+                    this.tasks = this.tasks.filter(t => t.id !== taskId);
+                    this.saveTasks();
+                    this.renderTasks();
+                }
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            new TaskManager();
+        });
+    </script>
+    <script src="./js/perfil.js"></script>
+</body>
+
+</html>
