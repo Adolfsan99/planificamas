@@ -1,0 +1,301 @@
+<html><head><base href="/">
+<meta charset="UTF-8">
+<title>Task Manager</title>
+<style>
+:root {
+  --primary-color: #4a90e2;
+  --sidebar-bg: #fff1d0;
+  --text-color: #333;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: #f5f5f5;
+}
+
+/* Header styles */
+.header {
+  display: flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.logo {
+  width: 120px;
+  height: 60px;
+}
+
+.search-bar {
+  flex: 1;
+  margin: 0 2rem;
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 500px;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  margin: 0 auto;
+  display: block;
+}
+
+.notification-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 0 1rem;
+  background: var(--primary-color);
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.user-menu {
+  position: relative;
+}
+
+.user-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  background: #ddd;
+}
+
+/* Sidebar styles */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background: var(--sidebar-bg);
+  position: fixed;
+  left: 0;
+  top: 80px;
+  padding: 2rem 0;
+}
+
+.nav-item {
+  padding: 1rem 2rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.nav-item:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+/* Main content styles */
+.main-content {
+  margin-left: 250px;
+  padding: 2rem;
+}
+
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.create-task-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 2rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-card {
+  background: white;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background: white;
+  width: 90%;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 10px;
+}
+
+</style>
+</head>
+<body>
+<header class="header">
+  <svg class="logo" viewBox="0 0 120 60">
+    <rect width="120" height="60" fill="#4a90e2"/>
+    <text x="20" y="40" fill="white" font-size="24">TaskApp</text>
+  </svg>
+  
+  <div class="search-bar">
+    <input type="text" class="search-input" placeholder="Buscar tareas...">
+  </div>
+  
+  <button class="notification-btn">
+    <i class="fas fa-bell"></i>
+  </button>
+  
+  <div class="user-menu">
+    <div class="user-icon"></div>
+  </div>
+</header>
+
+<nav class="sidebar">
+  <div class="nav-item">Inicio</div>
+  <div class="nav-item">Tareas completadas</div>
+  <div class="nav-item">Calendario</div>
+  <div class="nav-item">Mis carpetas</div>
+  <div class="nav-item">Planifica Plus</div>
+  <div class="nav-item" style="margin-top: auto;">Soporte</div>
+</nav>
+
+<main class="main-content">
+  <h1>Todas tus tareas</h1>
+  
+  <div class="task-grid">
+    <button class="create-task-btn">
+      <i class="fas fa-plus"></i> Crear tarea
+    </button>
+    <!-- Task cards will be dynamically inserted here -->
+  </div>
+</main>
+
+<div class="modal" id="taskModal">
+  <div class="modal-content">
+    <h2>Crear tarea</h2>
+    <form id="taskForm">
+      <input type="text" placeholder="Título de la tarea" required>
+      <input type="date" required>
+      <select>
+        <option>Recordatorio</option>
+        <option>Hoy</option>
+        <option>Mañana</option>
+        <option>Diario</option>
+      </select>
+      <select>
+        <option>Prioridad</option>
+        <option>Urgente</option>
+        <option>Importante</option>
+        <option>Otros</option>
+      </select>
+      <textarea placeholder="Descripción"></textarea>
+      <button type="submit">Guardar</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://kit.fontawesome.com/your-code.js"></script>
+<script>
+// Task management
+class TaskManager {
+  constructor() {
+    this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    this.bindEvents();
+    this.renderTasks();
+  }
+
+  bindEvents() {
+    const createTaskBtn = document.querySelector('.create-task-btn');
+    if (createTaskBtn) {
+      createTaskBtn.addEventListener('click', () => {
+        document.getElementById('taskModal').style.display = 'block';
+      });
+    }
+
+    const taskForm = document.getElementById('taskForm');
+    if (taskForm) {
+      taskForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.createTask(e.target);
+      });
+    }
+  }
+
+  createTask(form) {
+    const task = {
+      id: Date.now(),
+      title: form.querySelector('input[type="text"]').value,
+      date: form.querySelector('input[type="date"]').value,
+      reminder: form.querySelector('select').value,
+      priority: form.querySelectorAll('select')[1].value,
+      description: form.querySelector('textarea').value,
+      completed: false
+    };
+
+    this.tasks.push(task);
+    this.saveTasks();
+    this.renderTasks();
+    document.getElementById('taskModal').style.display = 'none';
+    form.reset();
+  }
+
+  saveTasks() {
+    localStorage.setItem('tasks', JSON.stringify(this.tasks));
+  }
+
+  renderTasks() {
+    const taskGrid = document.querySelector('.task-grid');
+    if (!taskGrid) return;
+
+    // Clear the grid except for the create button
+    while (taskGrid.children.length > 1) {
+      taskGrid.removeChild(taskGrid.lastChild);
+    }
+
+    // Add task cards
+    this.tasks.forEach(task => {
+      const card = this.createTaskCard(task);
+      taskGrid.appendChild(card);
+    });
+  }
+
+  createTaskCard(task) {
+    const card = document.createElement('div');
+    card.className = 'task-card';
+    card.innerHTML = `
+      <h3>${task.title}</h3>
+      <p>${task.description}</p>
+      <div class="task-meta">
+        <span>${task.date}</span>
+        <span>${task.priority}</span>
+      </div>
+    `;
+    return card;
+  }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  new TaskManager();
+});
+</script>
+</body>
+</html>
