@@ -252,6 +252,12 @@
             padding: 2rem;
             border-radius: 10px;
         }
+
+        .icon {
+            height: 1rem;
+            display: inline-flex;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -285,12 +291,18 @@
 
 
     <nav class="sidebar">
-        <div class="nav-item" data-view="home">Inicio</div>
-        <div class="nav-item" data-view="completed">Tareas completadas</div>
-        <div class="nav-item" data-view="calendar">Calendario</div>
-        <div class="nav-item" data-view="folders">Mis carpetas</div>
-        <div class="nav-item" data-view="plus">Planifica Plus</div>
-        <div class="nav-item" data-view="support" style="margin-top: auto;">Soporte</div>
+        <div class="nav-item" data-view="home"><img src="assets/app-icons/home.svg" alt="icono inicio"
+                class="icon">Inicio</div>
+        <div class="nav-item" data-view="completed"><img src="assets/app-icons/check_circle.svg"
+                alt="icono tareas completadas" class="icon">Tareas completadas</div>
+        <div class="nav-item" data-view="calendar"><img src="assets/app-icons/calendar.svg" alt="icono calendario"
+                class="icon">Calendario</div>
+        <div class="nav-item" data-view="folders"><img src="assets/app-icons/folder.svg" alt="icono carpetas"
+                class="icon">Mis carpetas</div>
+        <div class="nav-item" data-view="plus"><img src="assets/app-icons/new_releases.svg" alt="icono planifica plus"
+                class="icon">Planifica Plus</div>
+        <div class="nav-item" data-view="support" style="margin-top: auto;"><img
+                src="assets/app-icons/support_agent.svg" alt="icono soporte" class="icon">Soporte</div>
     </nav>
 
     <main class="main-content">
